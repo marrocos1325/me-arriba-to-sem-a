@@ -7,16 +7,16 @@ body {
     display: flex;
     flex-direction: column;
 }
-footer{
+#footer1{
     font-size: 20px;
-    margin-top: 20px;
+    margin-top: 650px;
     background-color: #6b6774;
     text-align: center;
-    border: 1px solid #6a6870;
     width: 500px;
-    height: 50px;
-    background: linear-gradient(45deg, #6b6774, #616060);
+    height: 35px;
     border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-left: 700px;
 }
 form{
     margin-top: 10px;
@@ -54,6 +54,10 @@ button{
     width: 150px;
     border-radius: 5px;
     background: linear-gradient(45deg, #6b6774, #fafafa);
+    text-align: center; 
+    align-items: center;
+    margin-left: 877px;
+    margin-top: 10px;
 }
 select{
     margin-top: 10px;
@@ -63,8 +67,82 @@ select{
     background: linear-gradient(45deg, #6b6774, #fafafa);
 }
 #header2{
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', ;
+    font-family:"Playfair Display", Georgia, serif;
     text-align: left;
-    font-size: 50px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-}   
+    font-size: 40px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2 2 10px rgba(2, 2, 2, 0.7);
+}    
+#header1{
+    font-family:"Playfair Display", Georgia, serif;
+    text-align: left;
+    font-size: 40px;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2 2 10px rgba(2, 2, 2, 0.7);
+    text-align: center;
+}
+#footer2{
+    font-size: 20px;
+    margin-top: 100px;
+    background-color: #6b6774;
+    text-align: center;
+    width: 500px;
+    height: 35px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-left: 749px;
+}
+p{
+    font-size: 30px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    width: 500px;
+    border-radius: 5px;
+    border: 1px solid #6a6870;
+    align-items: center;
+    margin-left: 700px;
+}
+#footer3{
+    font-size: 20px;
+    margin-top: 100px;
+    background-color: #6b6774;
+    text-align: center;
+    width: 500px;
+    height: 35px;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.5);
+    margin-left: 720px;
+}
+#header3{
+    font-family:"Playfair Display", Georgia, serif;
+    text-align: left;
+    font-size: 20px;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2 2 10px rgba(2, 2, 2, 0.7);
+    text-align: center;
+}
+#butao3{
+    margin-top: 10px;
+    height: 40px;
+    width: 150px;
+    border-radius: 5px;
+    background: linear-gradient(45deg, #6b6774, #fafafa);
+    margin-left: 887px;
+}
+#butao5{
+    margin-top: 10px;
+    height: 40px;
+    width: 150px;
+    border-radius: 5px;
+    background: linear-gradient(45deg, #6b6774, #fafafa);
+    margin-left: 887px;
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>narutin</title>
+    <title>tela de cadastro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,35 +13,36 @@
             <label for="nome">Nome</label>
             <input type="text" id="nome"  placeholder="Nome" required>
 
-            <label for="end">CPF</label>
-            <input type="number" id="end"  placeholder="000.000.000-00" required>
+            <label for="cpf">CPF</label>
+            <input type="number" id="cpf"  placeholder="000.000.000-00" required>
 
             <label for="tel">Telefone</label>
             <input type="number" id="tel"  placeholder="32 99999-9999" required maxlength="13">
 
-            <label for="emal">Email</label>
-            <input type="email" id="emal"  placeholder="exemplo@gmail.com" required>
+            <label for="email">Email</label>
+            <input type="email" id="email"  placeholder="exemplo@gmail.com" required>
 
             <label for="end">Endereço</label>
             <input type="text" id="end"  placeholder="Endereço" required>
 
             <label for="turno">Qual o turno de trabalho</label>
-            <select>
+            <select id="turno">
                 <option>Manha</option>
                 <option>Tarde</option>
                 <option>Noite</option>
             </select>
 
-            <label for="cargo">Cargo</label>
-            <select>
+            <label for="cargo" >Cargo</label>
+            <select id="cargo">
                 <option>Faxineiro</option>
                 <option>Caixa</option>
                 <option>Gerente</option>
                 <option>Repositor</option>
             </select>
-            <button type="submit">Ser escravisado!</button>
+            <button id="c4" type="submit">Enviar informações</button>
         </form>
     </main>
-    <footer>&copy 2026 todos os direito reservados. Arthur e Marcos</footer>
+    <footer id="footer2">&copy 2026 todos os direito reservados. Arthur e Marcos</footer>
+    <script src="script.js"></script>
 </body>
 </html>

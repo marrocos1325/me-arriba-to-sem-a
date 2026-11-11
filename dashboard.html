@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Testes – Cadastro de Funcionários</title>
+    <style>
+        :root {
+            --fundo: #0a0a1a;
+            --cinza: #6b6774;
+            --claro: #fafafa;
+            --painel: rgba(0, 0, 0, 0.55);
+            --borda: #6a6870;
+            --verde: #2ecc71;
+            --vermelho: #ff5c5c;
+            --azul: #5aa9ff;
+            --laranja: #ffb347;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: linear-gradient(rgba(10, 10, 26, 0.85), rgba(10, 10, 26, 0.95)),
+                        url('fundo.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header, main, footer { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+        /* Cabeçalho */
+        header { padding-top: 24px; padding-bottom: 8px; }
+        .marca { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .logo {
+            width: 64px; height: 64px; border-radius: 12px;
+            background: linear-gradient(45deg, var(--cinza), var(--claro));
+            display: grid; place-items: center; font-size: 34px;
+            border: 1px solid var(--borda);
+        }
+        .empresa { font-family: "Playfair Display", Georgia, serif; font-size: 26px; text-transform: uppercase; letter-spacing: 2px; margin: 0; }
+        .area { margin: 2px 0 0; color: #cfcdd4; font-size: 14px; }
+        h1 {
+            font-family: "Playfair Display", Georgia, serif;
+            text-transform: uppercase; letter-spacing: 2px;
+            font-size: clamp(20px, 4vw, 32px);
+            margin: 20px 0 6px; text-shadow: 2px 2px 4px rgba(0,0,0,.5);
+        }
+        .sub { margin: 0 0 16px; color: #cfcdd4; font-size: 14px; }
+
+        /* Resumo */
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0 16px; }
+        .card { background: var(--painel); border: 1px solid var(--borda); border-radius: 8px; padding: 16px; text-align: center; }
+        .card .num { font-size: 36px; font-weight: bold; }
+        .card .rot { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #cfcdd4; }
+        .card.ok .num { color: var(--verde); }
+        .card.erro .num { color: var(--vermelho); }
+        .card.perc .num { color: var(--claro); }
+
+        /* Gráfico em barras CSS */
+        .grafico { background: var(--painel); border: 1px solid var(--borda); border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; }
+        .barra { display: flex; height: 22px; border-radius: 6px; overflow: hidden; background: #333; margin-top: 8px; }
+        .barra .p { background: var(--verde); } .barra .f { background: var(--vermelho); }
+        .legenda { font-size: 13px; color: #cfcdd4; margin-top: 6px; display: flex; gap: 16px; flex-wrap: wrap; }
+
+        /* Filtros */
+        .filtros { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; align-items: center; }
+        .filtros label { font-size: 14px; display: flex; gap: 6px; align-items: center; }
+        .filtros select {
+            height: 32px; border-radius: 5px; padding: 0 8px;
+            background: linear-gradient(45deg, var(--cinza), var(--claro)); border: none;
+        }
+
+        /* Tabela */
+        .tabela-wrap { overflow-x: auto; border: 1px solid var(--borda); border-radius: 8px; background: var(--painel); }
+        table { border-collapse: collapse; width: 100%; min-width: 1000px; font-size: 14px; }
+        th, td { padding: 10px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid rgba(255,255,255,.12); }
+        th { background: rgba(107,103,116,.6); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; position: sticky; top: 0; }
+        tr:hover td { background: rgba(255,255,255,.04); }
+
+        .selo { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: bold; white-space: nowrap; }
+        .selo.req { background: rgba(90,169,255,.18); color: var(--azul); border: 1px solid var(--azul); }
+        .selo.blq { background: rgba(255,179,71,.18); color: var(--laranja); border: 1px solid var(--laranja); }
+        .status { display: inline-block; padding: 3px 10px; border-radius: 5px; font-weight: bold; font-size: 12px; white-space: nowrap; }
+        .status.passou { background: rgba(46,204,113,.18); color: var(--verde); border: 1px solid var(--verde); }
+        .status.falhou { background: rgba(255,92,92,.18); color: var(--vermelho); border: 1px solid var(--vermelho); }
+
+        .nota { font-size: 12px; color: #cfcdd4; margin: 10px 0 0; }
+
+        footer {
+            margin-top: auto; padding-top: 24px; padding-bottom: 24px; text-align: center; font-size: 14px;
+        }
+        footer div { background: var(--painel); border-radius: 5px; padding: 10px; display: inline-block; }
+        main { padding-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="marca">
+            <div class="logo" aria-label="Logo da empresa">🛒</div>
+            <div>
+                <p class="empresa" id="nomeEmpresa">Supermercado Super Interessante</p>
+                <p class="area">Área de atuação: Varejo – Supermercado</p>
+            </div>
+        </div>
+        <h1>Dashboard de Testes – Cadastro de Funcionários</h1>
+        <p class="sub">Ambiente: Google Chrome (desktop) · Página testada: cadastro.html</p>
+    </header>
+
+    <main>
+        <!-- RESUMO -->
+        <section class="cards" aria-label="Resumo dos resultados">
+            <div class="card"><div class="num" id="total">0</div><div class="rot">Total de casos</div></div>
+            <div class="card ok"><div class="num" id="passou">0</div><div class="rot">Passou</div></div>
+            <div class="card erro"><div class="num" id="falhou">0</div><div class="rot">Falhou</div></div>
+            <div class="card perc"><div class="num" id="perc">0%</div><div class="rot">Aprovação</div></div>
+        </section>
+
+        <section class="grafico" aria-label="Gráfico Passou x Falhou">
+            <strong>Passou × Falhou</strong>
+            <div class="barra"><div class="p" id="barP"></div><div class="f" id="barF"></div></div>
+            <div class="legenda"><span style="color:var(--verde)">■ Passou</span><span style="color:var(--vermelho)">■ Falhou</span></div>
+        </section>
+
+        <!-- FILTROS -->
+        <div class="filtros">
+            <label>Tipo de teste
+                <select id="fTipo">
+                    <option value="">Todos</option>
+                    <option>Requisitos</option>
+                    <option>Bloqueio</option>
+                </select>
+            </label>
+            <label>Status
+                <select id="fStatus">
+                    <option value="">Todos</option>
+                    <option>PASSOU</option>
+                    <option>FALHOU</option>
+                </select>
+            </label>
+        </div>
+
+        <!-- TABELA -->
+        <div class="tabela-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tipo de Teste</th>
+                        <th>Caso de Teste (CT)</th>
+                        <th>O que foi testado</th>
+                        <th>Como foi testado</th>
+                        <th>Resultado Esperado</th>
+                        <th>Resultado Obtido</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="corpo"></tbody>
+            </table>
+        </div>
+        <p class="nota">Dica: no celular, arraste a tabela para os lados para ver todas as colunas.</p>
+    </main>
+
+    <footer>
+        <div>&copy; <span id="ano"></span> · Data do teste: <span id="data"></span> · Responsáveis: Arthur e Marcos</div>
+    </footer>
+
+    <script>
+        // ====== CASOS DE TESTE (edite aqui se refizer algum teste) ======
+        const casos = [
+            {
+                id: "CT-01", tipo: "Requisitos", nome: "Cadastro com sucesso",
+                testado: "Envio do formulário completo e mensagem de sucesso",
+                como: "Nome: Maria Silva; CPF: 12345678901; Telefone: 32999999999; E-mail: maria@gmail.com; Endereço: Rua A, 10; Turno: Manhã; Cargo: Caixa; clique em “Enviar informações”",
+                esperado: "Salva o cadastro, exibe “Cadastro realizado com sucesso!” e abre a página inicio.html",
+                obtido: "Alerta “Cadastro realizado com sucesso!” exibido, dados gravados no localStorage e redirecionamento para inicio.html",
+                status: "PASSOU"
+            },
+            {
+                id: "CT-02", tipo: "Bloqueio", nome: "Campo obrigatório vazio",
+                testado: "Validação do campo obrigatório “Nome”",
+                como: "Nome em branco; demais campos válidos; turno e cargo selecionados; clique em “Enviar informações”",
+                esperado: "O sistema impede o envio e avisa que o campo é obrigatório",
+                obtido: "Envio bloqueado; o navegador exibiu o balão “Preencha este campo” sobre o Nome (aviso padrão do navegador, não alerta vermelho)",
+                status: "PASSOU"
+            },
+            {
+                id: "CT-03", tipo: "Bloqueio", nome: "Formato de e-mail inválido",
+                testado: "Validação do campo E-mail",
+                como: "E-mail: joao.gmail.com (sem @); demais campos válidos; clique em “Enviar informações”",
+                esperado: "O sistema impede o envio e avisa que o e-mail é inválido",
+                obtido: "Envio bloqueado; o navegador exibiu o balão “Inclua um ‘@’ no endereço de e-mail”",
+                status: "PASSOU"
+            },
+            {
+                id: "CT-04", tipo: "Bloqueio", nome: "Seleção de múltiplos turnos",
+                testado: "Seleção simultânea de dois turnos no campo Turno",
+                como: "Selecionar “Manhã” e, em seguida, tentar marcar também “Tarde” (clicar e usar Ctrl+clique)",
+                esperado: "O sistema não permite escolher dois turnos ao mesmo tempo",
+                obtido: "Só uma opção fica marcada por vez; ao escolher “Tarde”, “Manhã” é desmarcada",
+                status: "PASSOU"
+            },
+            {
+                id: "CT-05", tipo: "Requisitos", nome: "Opções do campo Cargo",
+                testado: "Quantidade de opções do select de Cargo",
+                como: "Abrir a lista do campo Cargo e contar as opções",
+                esperado: "A lista exibe pelo menos 4 cargos",
+                obtido: "4 opções exibidas: Faxineiro, Caixa, Gerente e Repositor",
+                status: "PASSOU"
+            },
+            {
+                id: "CT-06", tipo: "Requisitos", nome: "Logo da empresa exibida",
+                testado: "Presença do logo e do nome da empresa na tela de cadastro",
+                como: "Abrir cadastro.html e observar o topo da página",
+                esperado: "Logo e nome da empresa visíveis no cabeçalho",
+                obtido: "Só aparece o texto “se junte a nos!”; não há logo nem nome da empresa na página",
+                status: "FALHOU"
+            },
+            {
+                id: "CT-07", tipo: "Requisitos", nome: "Botão “candidatar-se”",
+                testado: "Navegação da página inicial para o cadastro",
+                como: "Abrir index.html e clicar no botão “candidatar-se”",
+                esperado: "O sistema abre a tela de cadastro (cadastro.html)",
+                obtido: "A página cadastro.html foi aberta normalmente",
+                status: "PASSOU"
+            },
+            {
+                id: "CT-08", tipo: "Bloqueio", nome: "CPF com letras",
+                testado: "Validação do campo CPF com caracteres não numéricos",
+                como: "CPF: abc.def; demais campos válidos; tentar digitar as letras no campo",
+                esperado: "O sistema não aceita letras no CPF",
+                obtido: "O campo não permite digitar letras (aceita apenas números)",
+                status: "PASSOU"
+            },
+            {
+                id: "CT-09", tipo: "Bloqueio", nome: "CPF incompleto",
+                testado: "Validação da quantidade de dígitos do CPF",
+                como: "CPF: 123; demais campos válidos; clique em “Enviar informações”",
+                esperado: "O sistema impede o envio e avisa que o CPF deve ter 11 dígitos",
+                obtido: "O cadastro foi aceito, exibiu “Cadastro realizado com sucesso!” e abriu inicio.html",
+                status: "FALHOU"
+            },
+            {
+                id: "CT-10", tipo: "Bloqueio", nome: "CPF duplicado",
+                testado: "Bloqueio de dois cadastros com o mesmo CPF",
+                como: "Cadastrar CPF 12345678901 (CT-01) e cadastrar novamente outra pessoa com o mesmo CPF",
+                esperado: "O sistema impede o segundo cadastro e avisa que o CPF já existe",
+                obtido: "O segundo cadastro foi aceito e salvo; o localStorage ficou com dois registros com o mesmo CPF",
+                status: "FALHOU"
+            },
+            {
+                id: "CT-11", tipo: "Bloqueio", nome: "Telefone com dígitos demais",
+                testado: "Limite de tamanho do campo Telefone",
+                como: "Telefone: 3299999999999999 (16 dígitos); demais campos válidos; clique em “Enviar informações”",
+                esperado: "O sistema impede o envio (máximo de 13 caracteres)",
+                obtido: "O campo aceitou todos os dígitos (o maxlength não funciona em campo number) e o cadastro foi salvo",
+                status: "FALHOU"
+            }
+        ];
+
+        // ====== RENDERIZAÇÃO ======
+        const corpo = document.getElementById('corpo');
+        const fTipo = document.getElementById('fTipo');
+        const fStatus = document.getElementById('fStatus');
+
+        function desenharTabela() {
+            corpo.innerHTML = '';
+            casos
+                .filter(c => (!fTipo.value || c.tipo === fTipo.value) && (!fStatus.value || c.status === fStatus.value))
+                .forEach(c => {
+                    const tr = document.createElement('tr');
+                    const selo = c.tipo === 'Requisitos' ? 'req' : 'blq';
+                    const st = c.status === 'PASSOU' ? 'passou' : 'falhou';
+                    tr.innerHTML = `
+                        <td><strong>${c.id}</strong></td>
+                        <td><span class="selo ${selo}">${c.tipo}</span></td>
+                        <td>${c.nome}</td>
+                        <td>${c.testado}</td>
+                        <td>${c.como}</td>
+                        <td>${c.esperado}</td>
+                        <td>${c.obtido}</td>
+                        <td><span class="status ${st}">${c.status}</span></td>`;
+                    corpo.appendChild(tr);
+                });
+        }
+
+        function desenharResumo() {
+            const total = casos.length;
+            const passou = casos.filter(c => c.status === 'PASSOU').length;
+            const falhou = total - passou;
+            const perc = total ? (passou / total) * 100 : 0;
+            document.getElementById('total').textContent = total;
+            document.getElementById('passou').textContent = passou;
+            document.getElementById('falhou').textContent = falhou;
+            document.getElementById('perc').textContent = perc.toFixed(1).replace('.', ',') + '%';
+            document.getElementById('barP').style.width = perc + '%';
+            document.getElementById('barF').style.width = (100 - perc) + '%';
+        }
+
+        fTipo.addEventListener('change', desenharTabela);
+        fStatus.addEventListener('change', desenharTabela);
+
+        const hoje = new Date();
+        document.getElementById('data').textContent = hoje.toLocaleDateString('pt-BR');
+        document.getElementById('ano').textContent = hoje.getFullYear();
+
+        desenharResumo();
+        desenharTabela();
+    </script>
+</body>
+</html>
